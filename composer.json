@@ -1,6 +1,7 @@
 {
     "name": "ryangjchandler/peso",
     "description": "An elephant-ish esoteric programming language inspired by Brainf*ck.",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Peso\\": "src"

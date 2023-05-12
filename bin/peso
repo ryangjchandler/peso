@@ -8,7 +8,7 @@ use Peso\Interpreter;
 use Peso\Lexer;
 use Peso\Parser;
 
-$autoloaders = [__DIR__.'/../autoload.php', __DIR__.'/../vendor/autoload.php'];
+$autoloaders = [__DIR__.'/../../../autoload.php', __DIR__.'/../vendor/autoload.php'];
 $file = null;
 
 foreach ($autoloaders as $autoloader) {

@@ -1,0 +1,78 @@
+#!/usr/bin/env php
+<?php
+
+use Peso\Compiler;
+use Peso\Exceptions\UnexpectedCharacterException;
+use Peso\Exceptions\UnexpectedTokenException;
+use Peso\Interpreter;
+use Peso\Lexer;
+use Peso\Parser;
+
+$autoloaders = [__DIR__.'/../../autoload.php', __DIR__.'/../vendor/autoload.php'];
+$file = null;
+
+foreach ($autoloaders as $autoloader) {
+    if (file_exists($autoloader)) {
+        $file = $autoloader;
+        break;
+    }
+}
+
+if ($file === null) {
+    echo "error: failed to find autoloader\n";
+    exit(1);
+}
+
+require_once $file;
+
+if ($argc <= 1 || in_array('--help', $argv)) {
+    echo "usage: peso [file]\n";
+    exit(1);
+}
+
+$file = $argv[1];
+$compile = in_array('--compile', $argv) || in_array('-c', $argv);
+
+if (! file_exists($file)) {
+    echo "error: {$file} does not exist\n";
+    exit(1);
+}
+
+$code = file_get_contents($file);
+
+if (! $code) {
+    return;
+}
+
+$lexer = new Lexer;
+
+try {
+    $tokens = $lexer->tokenise($code);
+} catch (UnexpectedCharacterException $e) {
+    echo "lexer error: {$e->getMessage()}\n";
+    exit(1);
+}
+
+$parser = new Parser;
+
+try {
+    $program = $parser->parse($tokens);
+} catch (UnexpectedTokenException $e) {
+    echo "parser error: {$e->getMessage()}\n";
+    exit(1);
+}
+
+stream_set_blocking(STDIN, false);
+
+$input = trim(fgets(STDIN));
+$interpreter = new Interpreter;
+$compiler = new Compiler;
+
+if ($compile) {
+    echo $compiler->compile($program)($input);
+} else {
+    $interpreter->interpret($program, $input);
+    echo $interpreter->getOutput();
+}
+
+echo "\n";

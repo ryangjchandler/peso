@@ -2,6 +2,12 @@
     "name": "ryangjchandler/peso",
     "description": "An elephant-ish esoteric programming language inspired by Brainf*ck.",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Ryan Chandler",
+            "email": "support@ryangjchandler.co.uk"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Peso\\": "src"
